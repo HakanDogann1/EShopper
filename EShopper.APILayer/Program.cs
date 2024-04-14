@@ -1,5 +1,8 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using EShopper.BusinessLayer.Abstract;
 using EShopper.BusinessLayer.Concrete;
+using EShopper.BusinessLayer.DependencyResolves.Autofac;
 using EShopper.DataAccessLayer.Abstract;
 using EShopper.DataAccessLayer.Concrete;
 using EShopper.DataAccessLayer.Context;
@@ -7,9 +10,11 @@ using EShopper.EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 var builder = WebApplication.CreateBuilder(args);
-
-
-
+//Autofac
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()).ConfigureContainer<ContainerBuilder>(builder =>
+{
+    builder.RegisterModule(new AutofacManager());
+});
 
 builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<EShopperDbContext>();
 builder.Services.AddDbContext<EShopperDbContext>(opt =>
